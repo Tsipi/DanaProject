@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head.ejs') %>
+<body>
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="createpatient content container my-4">
+        <div class="row">
+            <div class="col">
+                <h2>Create a Patient</h2>
+                <form action="/patients/create" method="POST">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" class="form-control" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName" required>
+                    </div>                    
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" class="form-control" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select class="form-control" id="gender" name="gender" required>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="pregnancyField" style="display: none;">
+                        <label for="pregnant">Pregnant</label>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="pregnant" name="pregnant">
+                            <label class="custom-control-label" for="pregnant">Yes</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="nursingField" style="display: none;">
+                        <label for="nursing">Nursing</label>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="nursing" name="nursing">
+                            <label class="custom-control-label" for="nursing">Yes</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="chronicalCondition">Chronical Condition</label>
+                        <input type="text" class="form-control" id="chronicalCondition" name="chronicalCondition">
+                    </div>
+                    <div class="form-group">
+                        <label for="medications">Medications</label>
+                        <input type="text" class="form-control" id="medications" name="medications">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Patient</button>
+                </form>
+                
+            </div>
+        </div>
+        
+    </div> 
+    <%- include('./partials/footer.ejs') %>    
+
+    <script src="/js/gender-toggle.js"></script>
+</body>
+</html>
