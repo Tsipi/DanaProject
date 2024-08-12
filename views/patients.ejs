@@ -42,7 +42,7 @@
                         <td></td>
                         <td></td>
                         <td>
-                            <form action="/patients/delete/<%= patient._id %>" method="POST" style="display:inline;">
+                            <form action="/patients/delete/<%= patient._id.toString() %>" method="POST" style="display:inline;">
                                 <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
                             </form>
                         </td>

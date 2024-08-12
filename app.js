@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express')
 const { connectToDb, getDb } = require('./db')
 const { ObjectId } = require('mongodb')
@@ -63,17 +64,36 @@ app.get('/patients/create', (req, res) => {
 // Route to handle the form submission for creating a new patient
 app.post('/patients/create', (req, res) => {
     const newPatient = req.body;
-    patients.push(newPatient); // Add the new patient to the array (you would typically save this to a database)
-    res.redirect('/patients');
+
+    db.collection('patients')
+        .insertOne(newPatient)
+        .then(() => {
+            res.redirect('/patients');
+        })
+        .catch((err) => {
+            console.error("Failed to create patient:", err);
+            res.status(500).json({ error: "Could not create the patient document" });
+        });
 });
 
 // Route to handle deleting a patient
 app.post('/patients/delete/:id', (req, res) => {
     const patientId = req.params.id;
-    // Implement logic to remove patient from the array or database using the id
-    res.redirect('/patients');
-});
 
+    if (ObjectId.isValid(patientId)) {
+        db.collection('patients')
+            .deleteOne({ _id: new ObjectId(patientId) })
+            .then(() => {
+                res.redirect('/patients');
+            })
+            .catch((err) => {
+                console.error("Failed to delete patient:", err);
+                res.status(500).json({ error: "Could not delete the patient" });
+            });
+    } else {
+        res.status(500).json({ error: "Not a valid patient id" });
+    }
+});
 // Route to display the edit form
 app.get('/patients/edit/:id', (req, res) => {
     const patientId = req.params.id;
@@ -84,9 +104,35 @@ app.get('/patients/edit/:id', (req, res) => {
 // Route to handle the form submission for editing a patient
 app.post('/patients/edit/:id', (req, res) => {
     const patientId = req.params.id;
-    const updatedPatient = req.body;
-    // Implement logic to update the patient in the array or database using the id
-    res.redirect('/patients');
+
+    if (ObjectId.isValid(patientId)) {
+        db.collection('patients')
+            .updateOne(
+                { _id: new ObjectId(patientId) },
+                {
+                    $set: {
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        phone: req.body.phone,
+                        email: req.body.email,
+                        gender: req.body.gender,
+                        pregnant: req.body.pregnant === 'on', // Handle checkbox value
+                        nursing: req.body.nursing === 'on',   // Handle checkbox value
+                        chronicalCondition: req.body.chronicalCondition,
+                        medications: req.body.medications,
+                    }
+                }
+            )
+            .then(() => {
+                res.redirect('/patients');
+            })
+            .catch((err) => {
+                console.error("Failed to update patient:", err);
+                res.status(500).json({ error: "Could not update the patient document" });
+            });
+    } else {
+        res.status(500).json({ error: "Not a valid patient id" });
+    }
 });
 
 
