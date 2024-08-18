@@ -3,60 +3,59 @@
     <%- include('./partials/head.ejs') %>
 <body>
     <%- include('./partials/nav.ejs') %>
-    <div class="store content">
-        <div class="container-fluid">
-            <div class="row">
-                <h2 class="col my-4">Patients List</h2>
-                <a href="/patients/create" class="my-4 mx-4 btn btn-primary" ><i class="fa fa-plus-circle"></i> Add Patient</a>            
-            </div>
-            
-            <% if (patients.length > 0) { %>
-            <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th></th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Gender</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                        <th>Pregnant</th>
-                        <th>Nursing</th>
-                        <th>Chronical Condition</th>
-                        <th>Medications</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% patients.forEach(function(patient) { %>
-                    <tr>
-                        <td><img width="50" src="<%= patient.image %>" /></td>
-                        <td><%= patient.firstName %></td>
-                        <td><%= patient.lastName %></td>
-                        <td><%= patient.gender %></td>
-                        <td><%= patient.phone %></td>
-                        <td><%= patient.email %></td>
-                        <td><%= patient.preganant %></td>
-                        <td><%= patient.nursing %></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <form action="/patients/delete/<%= patient._id.toString() %>" method="POST" style="display:inline;">
-                                <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
-                            </form>
-                        </td>
-                        <td>
-                            <a href="/patients/edit/<%= patient._id %>" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i></a>
-                        </td>
-                    </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-            <% } %>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <h2 class="col my-4">Patients List</h2>
+            <a href="/patients/create" class="my-4 mx-4 btn btn-primary" ><i class="fa fa-plus-circle"></i> Add Patient</a>            
         </div>
-    </div>  
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        
+        <% if (patients.length > 0) { %>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th></th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    <th>Pregnant</th>
+                    <th>Nursing</th>
+                    <th>Chronical Condition</th>
+                    <th>Medications</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% patients.forEach(function(patient) { %>
+                <tr>
+                    <td><img width="50" src="<%= patient.image %>" /></td>
+                    <td><%= patient.firstName %></td>
+                    <td><%= patient.lastName %></td>
+                    <td><%= patient.phone %></td>
+                    <td><%= patient.email %></td>
+                    <td><%= patient.gender %></td>
+                    <td><%= patient.pregnant ? 'Yes' : 'No' %></td>
+                    <td><%= patient.nursing ? 'Yes' : 'No' %></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <form action="/patients/delete/<%= patient._id.toString() %>" method="POST" style="display:inline;">
+                            <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                        </form>
+                    </td>
+                    <td>
+                        <a href="/patients/edit/<%= patient._id %>" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i></a>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <% } %>
+    </div>
+    
     <%- include('./partials/footer.ejs') %> 
 </body>
 </html>

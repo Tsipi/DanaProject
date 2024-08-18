@@ -10,6 +10,8 @@ const fs = require('fs')
 // Initialize app & middleware
 const app = express()
 app.use(bodyParser.urlencoded({ extended: true }))
+
+//init ejs templates that generate HTML
 app.set('view engine', 'ejs') // app.set('views','myViews') //for different name folder
 app.use(express.static('public'))
 
@@ -38,7 +40,7 @@ const upload = multer({ storage: storage });
 //db connection
 let db
 
-const patients = []; // patients data storage
+let patients = []; // patients data storage
 
 //listen to requests
 connectToDb((err) => {
@@ -51,28 +53,28 @@ connectToDb((err) => {
 })
 
 
-//routes
+/* routes 
+*****************/
+
+//Home page
 app.get('/', (req,res) => {
-   res.render('index')
+   res.render('home')
 })
 
-
+//Patients List
 app.get('/patients', (req,res) => {
     db.collection('patients')
-        .find().toArray() //cursor toArray, forEach
-        .then (patients => {
-            res.render('patients', { patients: patients }); //res.status(200).json(patients)
-        })
-        .catch((err)=>{
-            res.status(500).json({error: "Could not fetch the documents/data"})
-        })
-   
-   //To show the specific page - if only want to show the data - remove this line
-  
+    .find().toArray() //cursor toArray, forEach
+    .then (patients => {
+        res.render('patients', { patients: patients }); //res.status(200).json(patients)
+    })
+    .catch((err)=>{
+        res.status(500).json({error: "Could not fetch the documents/data"})
+    })
 })
 
 
-// Route to display the form to create a new patient
+// Display the form to CREATE a new patient
 app.get('/patients/create', (req, res) => {
     res.render('create');
 });
@@ -85,8 +87,8 @@ app.post('/patients/create', upload.single('image'), (req, res) => {
         gender: req.body.gender,
         phone: req.body.phone,
         email: req.body.email,
-        pregnant: req.body.pregnant === 'on', // Adjust as necessary based on your form
-        nursing: req.body.nursing === 'on',   // Adjust as necessary based on your form
+        pregnant: req.body.pregnant === 'on' || false, // Adjust as necessary based on your form
+        nursing: req.body.nursing === 'on' || false,   // Adjust as necessary based on your form
         chronicalCondition: req.body.chronicalCondition || '',
         medications: req.body.medications || '',
     };
@@ -124,6 +126,7 @@ app.post('/patients/delete/:id', (req, res) => {
         res.status(500).json({ error: "Not a valid patient id" });
     }
 });
+
 // Route to display the edit form
 app.get('/patients/edit/:id', (req, res) => {
     const patientId = req.params.id;
@@ -148,16 +151,20 @@ app.get('/patients/edit/:id', (req, res) => {
 });
 
 // Route to handle the form submission for editing a patient
-app.post('/patients/edit/:id', upload.single('image'), (req, res) => {
+app.post('/patients/edit/:id', upload.single('image'), upload.single('image'), (req, res) => {
     const patientId = req.params.id;
+    console.log('Patient ID:', patientId);
+    console.log('Received data:', req.body);
+    console.log('File data:', req.file);
+
     const updateData = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         phone: req.body.phone,
         email: req.body.email,
         gender: req.body.gender,
-        pregnant: req.body.pregnant === 'on',
-        nursing: req.body.nursing === 'on',
+        pregnant: req.body.gender === 'female' ? req.body.pregnant === 'on' : false,
+        nursing: req.body.gender === 'female' ? req.body.nursing === 'on' : false,
         chronicalCondition: req.body.chronicalCondition,
         medications: req.body.medications,
     };
