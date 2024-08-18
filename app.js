@@ -153,9 +153,6 @@ app.get('/patients/edit/:id', (req, res) => {
 // Route to handle the form submission for editing a patient
 app.post('/patients/edit/:id', upload.single('image'), upload.single('image'), (req, res) => {
     const patientId = req.params.id;
-    console.log('Patient ID:', patientId);
-    console.log('Received data:', req.body);
-    console.log('File data:', req.file);
 
     const updateData = {
         firstName: req.body.firstName,
@@ -165,7 +162,7 @@ app.post('/patients/edit/:id', upload.single('image'), upload.single('image'), (
         gender: req.body.gender,
         pregnant: req.body.gender === 'female' && req.body.pregnant === 'on', // : false,
         nursing: req.body.gender === 'female' && req.body.nursing === 'on',// : false,
-        chronicalCondition: req.body.chronicalCondition,
+        chronicalCondition: req.body.chronicalCondition || [],
         medications: req.body.medications,
     };
 

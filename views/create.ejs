@@ -63,8 +63,16 @@
 
                     <div class="form-group">
                         <label for="chronicalCondition">Chronical Condition</label>
-                        <input type="text" class="form-control" id="chronicalCondition" name="chronicalCondition">
+                        <select class="form-control" id="chronicalCondition" name="chronicalCondition[]" multiple>
+                            <option value="Heart disease">Heart disease</option>
+                            <option value="Kidneys">Kidneys</option>
+                            <option value="Digestion">Digestion</option>
+                            <option value="Diabetes">Diabetes</option>
+                            <option value="Asthma">Asthma</option>
+                        </select>
                     </div>
+                    
+                    
                     <div class="form-group">
                         <label for="medications">Medications</label>
                         <input type="text" class="form-control" id="medications" name="medications">

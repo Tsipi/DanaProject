@@ -39,8 +39,9 @@
                     <td><%= patient.gender %></td>
                     <td><%= patient.pregnant ? 'Yes' : 'No' %></td>
                     <td><%= patient.nursing ? 'Yes' : 'No' %></td>
-                    <td></td>
-                    <td></td>
+                    <!-- Display chronicalCondition as a comma-separated list or 'None' if empty -->
+                    <td><%= patient.chronicalCondition.length > 0 ? patient.chronicalCondition.join(', ') : 'None' %></td>
+                    <td><%= patient.medications %></td>
                     <td>
                         <form action="/patients/delete/<%= patient._id.toString() %>" method="POST" style="display:inline;">
                             <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
