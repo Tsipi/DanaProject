@@ -151,11 +151,8 @@ app.get('/patients/edit/:id', (req, res) => {
 });
 
 // Route to handle the form submission for editing a patient
-app.post('/patients/edit/:id', upload.single('image'), upload.single('image'), (req, res) => {
+app.post('/patients/edit/:id', upload.single('image'),(req, res) => {
     const patientId = req.params.id;
-    console.log('Patient ID:', patientId);
-    console.log('Received data:', req.body);
-    console.log('File data:', req.file);
 
     const updateData = {
         firstName: req.body.firstName,
@@ -192,38 +189,6 @@ app.post('/patients/edit/:id', upload.single('image'), upload.single('image'), (
     }
 });
 
-
-
-// const mongoose = require('mongoose');
-
-// // Route to display the edit form
-// app.get('/patients/edit/:id', async (req, res) => {
-//     const patientId = req.params.id;
-    
-//     try {
-//         const patient = await Patient.findById(mongoose.Types.ObjectId(patientId));
-        
-//         if (!patient) {
-//             return res.status(404).send('Patient not found');
-//         }
-        
-//         res.render('edit', { patient });
-//     } catch (error) {
-//         res.status(500).send('Error retrieving patient data');
-//     }
-// });
-
-// // Route to handle the form submission for editing a patient
-// app.post('/patients/edit/:id', async (req, res) => {
-//     const patientId = req.params.id;
-    
-//     try {
-//         await Patient.findByIdAndUpdate(mongoose.Types.ObjectId(patientId), req.body);
-//         res.redirect('/patients');
-//     } catch (error) {
-//         res.status(500).send('Error updating patient data');
-//     }
-// });
 
 
 app.get('/patients/:id', (req, res) => {
