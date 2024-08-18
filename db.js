@@ -2,27 +2,30 @@ const { MongoClient } = require('mongodb')
 
 let dbConnection
 
-//Mongo Atlas - WEB-Service-DB
-// let uri = 'mongodb+srv://DanaGi:LIrVmu6wF2UmBMUa@cluster0.mdt0yqz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
-// mongoose.connect(dburi, {userNewUrlParser: true, userUniFiedTopologyL true})
-//     .then((result)=>application.listen(3000))
-//     .catch((err)=>console.log(err));
+
 
 
 //local service for Mongo DB
-let uri = 'mongodb://localhost:27017/patientsstore'
+// let uri = 'mongodb://localhost:27017/patientsstore'
+let uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/patientsstore';
 
 module.exports = {
     connectToDb: (callBack) => {
         MongoClient.connect(uri)
             .then((client)=>{
                 dbConnection = client.db()
+                console.log('Connected to MongoDB')                
                 return callBack()
             })
             .catch(err=>{
-                console.log(err)
+                console.error('Failed to connect to MongoDB:', err)
                 return callBack(err)
             })
     },
-    getDb: () => dbConnection
+    getDb: () => {
+        if (!dbConnection) {
+            throw new Error('Database connection is not established yet')
+        }
+        return dbConnection
+    }
 }
