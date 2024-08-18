@@ -163,8 +163,8 @@ app.post('/patients/edit/:id', upload.single('image'), upload.single('image'), (
         phone: req.body.phone,
         email: req.body.email,
         gender: req.body.gender,
-        pregnant: req.body.gender === 'female' ? req.body.pregnant === 'on' : false,
-        nursing: req.body.gender === 'female' ? req.body.nursing === 'on' : false,
+        pregnant: req.body.gender === 'female' && req.body.pregnant === 'on', // : false,
+        nursing: req.body.gender === 'female' && req.body.nursing === 'on',// : false,
         chronicalCondition: req.body.chronicalCondition,
         medications: req.body.medications,
     };
