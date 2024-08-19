@@ -11,14 +11,14 @@
                 <form action="/patients/create" method="POST" enctype="multipart/form-data"> 
                     <div class="row">
                         <!-- Image preview -->
-                        <div class="col-2 form-group">
+                        <div class="col-1 form-group">
                             <div class="image-placeholder" id="imagePlaceholder">
                                 <i class="fa-solid fa-person"></i>
                             </div>  
                             <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; max-height: 100%; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);"/>
                         </div>
                         <!-- Optional image upload -->
-                        <div class="col-10 form-group">
+                        <div class="col form-group">
                             <label for="image">Upload Image (Optional)</label>
                             <input type="file" class="form-control-file" id="image" name="image" onchange="previewImage(event)">
                             <% if (typeof errorMessage !== 'undefined') { %>

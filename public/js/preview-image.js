@@ -15,4 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Attach the event listener to the file input
     const imageInput = document.getElementById('image');
     imageInput.addEventListener('change', previewImage);
+
+     // Ensure the image is visible if already set on the form load
+     const existingImage = document.getElementById('imagePreview').src;
+     if (existingImage && existingImage !== '#') {
+         document.getElementById('imagePreview').style.display = 'block';
+         document.getElementById('imagePlaceholder').style.display = 'none';
+     }
 });
