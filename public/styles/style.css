@@ -1,0 +1,24 @@
+.image-placeholder {
+    width: 70px;
+    height: 70px;
+    background-color: #e0e0e0; /* Light gray background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Optional: rounded corners */
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.image-placeholder i {
+    font-size: 50px; /* Size of the person icon */
+    color: #999; /* Color of the icon */
+}
+
+#imagePreview {
+    display: none; /* Hidden by default */
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
