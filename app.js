@@ -1,11 +1,25 @@
-require('dotenv').config(); //Store sensitive data such as the MongoDB URI in environment variables
-const express = require('express')
-const { connectToDb, getDb } = require('./db')
-const { ObjectId } = require('mongodb')
-const bodyParser = require('body-parser');
-const multer = require('multer'); //Handle the file upload on the server side
-const path = require('path')
-const fs = require('fs')
+import express from 'express';
+import { connectToDb, getDb } from './db.js';
+import { ObjectId } from 'mongodb';
+import bodyParser from 'body-parser';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import got from 'got'; // Import got for HTTP requests
+import FormData from 'form-data'; // Import FormData to handle file uploads
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// Define __dirname for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+/* Image Ditection
+******************/
+// const apiKey = 'acc_dc6f6fd864c44c3';
+const apiKey = 'acc_6beb1d795cf0bda';
+const apiSecret = '08e7428948be521ac61320d2423faa14';
+
 
 // Initialize app & middleware
 const app = express()
@@ -80,7 +94,7 @@ app.get('/patients/create', (req, res) => {
 });
 
 // Route to handle the form submission for creating a new patient
-app.post('/patients/create', upload.single('image'), (req, res) => {
+app.post('/patients/create', upload.single('image'), async (req, res) => {
     const newPatient = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -93,19 +107,48 @@ app.post('/patients/create', upload.single('image'), (req, res) => {
         medications: req.body.medications || '',
     };
 
-    // Handle optional image upload
     if (req.file) {
-        newPatient.image = `/uploads/${req.file.filename}`;
+        const imgPath = path.join(__dirname, req.file.path);
+        const formData = new FormData();
+        formData.append('image', fs.createReadStream(imgPath));
+
+        try {
+            // Make the request to Imagga's face detection API
+            const response = await got.post('https://api.imagga.com/v2/faces/detections', {
+                body: formData,
+                username: apiKey,
+                password: apiSecret
+            });
+
+            const result = JSON.parse(response.body);
+            const faces = result.result.faces;
+
+            if (faces && faces.length > 0) {
+                // Face detected, save the image path and patient data
+                newPatient.image = `/uploads/${req.file.filename}`;
+                
+                // Save the patient to the database
+                db.collection('patients')
+                    .insertOne(newPatient)
+                    .then(() => {
+                        res.redirect('/patients');
+                    })
+                    .catch((err) => {
+                        console.error("Failed to create patient:", err);
+                        res.status(500).json({ error: "Could not create the patient document" });
+                    });
+            } else {
+                // No face detected, delete the uploaded image and ask for another
+                fs.unlinkSync(imgPath);
+                res.status(400).send("No face detected. Please upload an image with a clear face.");
+            }
+        } catch (error) {
+            console.error("Imagga API error:", error.response.body);
+            res.status(500).send("Error processing the image.");
+        }
+    } else {
+        res.status(400).send("Please upload an image.");
     }
-    db.collection('patients')
-        .insertOne(newPatient)
-        .then(() => {
-            res.redirect('/patients');
-        })
-        .catch((err) => {
-            console.error("Failed to create patient:", err);
-            res.status(500).json({ error: "Could not create the patient document" });
-        });
 });
 
 // Route to handle deleting a patient
