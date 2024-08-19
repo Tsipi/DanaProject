@@ -97,18 +97,18 @@ app.get('/patients', (req, res) => {
 });
 
 
-// // Route to display the list of drugs and their interactions
-// app.get('/drugs', (req, res) => {
-//     db.collection('drugs')
-//         .find().toArray()
-//         .then(drugs => {
-//             res.render('drugs', { drugs: drugs });
-//         })
-//         .catch((err) => {
-//             console.error("Failed to fetch drugs:", err);
-//             res.status(500).json({ error: "Could not fetch the drugs data" });
-//         });
-// });
+// Route to display the list of drugs and their interactions
+app.get('/drugs', (req, res) => {
+    db.collection('drugs')
+        .find().toArray()
+        .then(drugs => {
+            res.render('drugs', { drugs: drugs });
+        })
+        .catch((err) => {
+            console.error("Failed to fetch drugs:", err);
+            res.status(500).json({ error: "Could not fetch the drugs data" });
+        });
+});
 
 // Display the form to CREATE a new patient
 app.get('/patients/create', (req, res) => {

@@ -1,0 +1,444 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drugs List</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>List of Drugs</h1>
+  <ul>
+    <% drugs.forEach(function(drug) { %>
+      <li>
+        <h2><%= drug.drugName %></h2>
+        <p><strong>Related Conditions:</strong> <%= drug.relatedConditions.join(', ') %></p>
+        <h3>Interactions:</h3>
+        <ul>
+          <% drug.interactions.forEach(function(interaction) { %>
+            <li>
+              <strong>With Drug:</strong> <%= interaction.withDrug %><br>
+              <strong>Description:</strong> <%= interaction.interactionDescription %>
+            </li>
+          <% }); %>
+        </ul>
+      </li>
+    <% }); %>
+  </ul>
+</body>
+</html> -->
+
+
+
+
+<!-- pretty list -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drugs List</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #444;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #003366;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        /* List Styles */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #ffffff;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #003366;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            margin-top: 20px;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.3em;
+            border-bottom: 2px solid #003366;
+            padding-bottom: 5px;
+        }
+
+        /* Interaction Styles */
+        ul ul {
+            margin-left: 20px;
+        }
+
+        ul ul li {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 5px solid #003366;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        ul ul li:hover {
+            background-color: #e9ecef;
+        }
+
+        strong {
+            color: #003366;
+        }
+
+        /* Button Styles */
+        .button {
+            display: inline-block;
+            background-color: #0056b3;
+            color: #ffffff;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .button:hover {
+            background-color: #004494;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>List of Drugs</h1>
+    <ul>
+        <% drugs.forEach(function(drug) { %>
+        <li>
+            <h2><%= drug.drugName %></h2>
+            <p class="drug-id"><strong>NDC:</strong> <%= drug.ndc %></p>  
+            <p><strong>Related Conditions:</strong> <%= drug.relatedConditions.join(', ') %></p>
+            <h3>Interactions</h3>
+            <ul>
+                <% drug.interactions.forEach(function(interaction) { %>
+                <li>
+                    <strong>With Drug:</strong> <%= interaction.withDrug %><br>
+                    <strong>Description:</strong> <%= interaction.interactionDescription %>
+                </li>
+                <% }); %>
+            </ul>
+        </li>
+        <% }); %>
+    </ul>
+</body>
+
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drugs List</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #444;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #003366;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        /* List Styles */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #ffffff;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #003366;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            margin-top: 20px;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.3em;
+            border-bottom: 2px solid #003366;
+            padding-bottom: 5px;
+        }
+
+        /* Interaction Styles */
+        ul ul {
+            margin-left: 20px;
+        }
+
+        ul ul li {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 5px solid #003366;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        ul ul li:hover {
+            background-color: #e9ecef;
+        }
+
+        strong {
+            color: #003366;
+        }
+
+        /* Button Styles */
+        .button {
+            display: inline-block;
+            background-color: #0056b3;
+            color: #ffffff;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .button:hover {
+            background-color: #004494;
+        }
+
+        .drug-id {
+            color: #777;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>List of Drugs</h1>
+    <ul>
+        <% drugs.forEach(function(drug) { %>
+        <li>
+            <h2><%= drug.drugName %></h2>
+            <p class="drug-id"><strong>NDC:</strong> <%= drug.ndc %></p> 
+            <p><strong>Related Conditions:</strong> <%= drug.relatedConditions.join(', ') %></p>
+            <h3>Interactions</h3>
+            <ul>
+                <% drug.interactions.forEach(function(interaction) { %>
+                <li>
+                    <strong>With Drug:</strong> <%= interaction.withDrug %><br>
+                    <strong>Description:</strong> <%= interaction.interactionDescription %>
+                </li>
+                <% }); %>
+            </ul>
+        </li>
+        <% }); %>
+    </ul>
+</body>
+
+</html> -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drugs List</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #444;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #003366;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0056b3;
+            color: #ffffff;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        td {
+            font-size: 1em;
+            vertical-align: top;
+        }
+
+        h3 {
+            margin: 0;
+            font-size: 1.1em;
+            color: #003366;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #003366;
+        }
+
+        .drug-id {
+            color: #777;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #0056b3;
+            color: #ffffff;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .button:hover {
+            background-color: #004494;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>List of Drugs</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>NDC</th>
+                <th>Drug Name</th>
+                <th>Related Conditions</th>
+                <th>Interactions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% drugs.forEach(function(drug) { %>
+            <tr>
+                <td><span class="drug-id"><%= drug.ndc %></span></td>
+                <td><h3><%= drug.drugName %></h3></td>
+                <td><%= drug.relatedConditions.join(', ') %></td>
+                <td>
+                    <ul>
+                        <% drug.interactions.forEach(function(interaction) { %>
+                        <li>
+                            <strong>With Drug:</strong> <%= interaction.withDrug %><br>
+                            <strong>Description:</strong> <%= interaction.interactionDescription %>
+                        </li>
+                        <% }); %>
+                    </ul>
+                </td>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</body>
+
+</html>
+
+
