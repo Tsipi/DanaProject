@@ -53,6 +53,23 @@ connectToDb((err) => {
 })
 
 
+// Function to calculate age on the server-side
+function calculateAge(dob) {
+    if (!dob) return 'None'; // Return 'None' if dob is not provided
+
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    // Adjust age if the birthdate hasn't occurred yet this year
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+
+    return age;
+}
+
 /* routes 
 *****************/
 
@@ -61,18 +78,37 @@ app.get('/', (req,res) => {
    res.render('home')
 })
 
-//Patients List
-app.get('/patients', (req,res) => {
-    db.collection('patients')
-    .find().toArray() //cursor toArray, forEach
-    .then (patients => {
-        res.render('patients', { patients: patients }); //res.status(200).json(patients)
-    })
-    .catch((err)=>{
-        res.status(500).json({error: "Could not fetch the documents/data"})
-    })
-})
 
+// Patients List
+app.get('/patients', (req, res) => {
+    db.collection('patients')
+        .find().toArray()
+        .then(patients => {
+            // Calculate age for each patient and add it to the patient object
+            patients.forEach(patient => {
+                patient.age = calculateAge(patient.dob);
+            });
+
+            res.render('patients', { patients: patients });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: "Could not fetch the documents/data" });
+        });
+});
+
+
+// // Route to display the list of drugs and their interactions
+// app.get('/drugs', (req, res) => {
+//     db.collection('drugs')
+//         .find().toArray()
+//         .then(drugs => {
+//             res.render('drugs', { drugs: drugs });
+//         })
+//         .catch((err) => {
+//             console.error("Failed to fetch drugs:", err);
+//             res.status(500).json({ error: "Could not fetch the drugs data" });
+//         });
+// });
 
 // Display the form to CREATE a new patient
 app.get('/patients/create', (req, res) => {
@@ -89,6 +125,7 @@ app.post('/patients/create', upload.single('image'), (req, res) => {
         email: req.body.email,
         pregnant: req.body.pregnant === 'on' || false, // Adjust as necessary based on your form
         nursing: req.body.nursing === 'on' || false,   // Adjust as necessary based on your form
+        dob: req.body.dob ? new Date(req.body.dob) : null,
         chronicalCondition: req.body.chronicalCondition || '',
         medications: req.body.medications || '',
     };
@@ -162,6 +199,7 @@ app.post('/patients/edit/:id', upload.single('image'), upload.single('image'), (
         gender: req.body.gender,
         pregnant: req.body.gender === 'female' && req.body.pregnant === 'on', // : false,
         nursing: req.body.gender === 'female' && req.body.nursing === 'on',// : false,
+        dob: req.body.dob ? new Date(req.body.dob) : null,
         chronicalCondition: req.body.chronicalCondition || [],
         medications: req.body.medications,
     };
@@ -188,40 +226,6 @@ app.post('/patients/edit/:id', upload.single('image'), upload.single('image'), (
         res.status(500).json({ error: "Not a valid patient id" });
     }
 });
-
-
-
-// const mongoose = require('mongoose');
-
-// // Route to display the edit form
-// app.get('/patients/edit/:id', async (req, res) => {
-//     const patientId = req.params.id;
-    
-//     try {
-//         const patient = await Patient.findById(mongoose.Types.ObjectId(patientId));
-        
-//         if (!patient) {
-//             return res.status(404).send('Patient not found');
-//         }
-        
-//         res.render('edit', { patient });
-//     } catch (error) {
-//         res.status(500).send('Error retrieving patient data');
-//     }
-// });
-
-// // Route to handle the form submission for editing a patient
-// app.post('/patients/edit/:id', async (req, res) => {
-//     const patientId = req.params.id;
-    
-//     try {
-//         await Patient.findByIdAndUpdate(mongoose.Types.ObjectId(patientId), req.body);
-//         res.redirect('/patients');
-//     } catch (error) {
-//         res.status(500).send('Error updating patient data');
-//     }
-// });
-
 
 app.get('/patients/:id', (req, res) => {
     if(ObjectId.isValid(req.params.id)) {
@@ -252,6 +256,8 @@ app.post('/patients', (req, res) => {
    
 })
 
+
 app.use((req, res) => {
     res.status(404).render('404')
 })
+

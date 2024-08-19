@@ -22,6 +22,7 @@
                     <th>Gender</th>
                     <th>Pregnant</th>
                     <th>Nursing</th>
+                    <th>Age</th>
                     <th>Chronical Condition</th>
                     <th>Medications</th>
                     <th></th>
@@ -39,6 +40,8 @@
                     <td><%= patient.gender %></td>
                     <td><%= patient.pregnant ? 'Yes' : 'No' %></td>
                     <td><%= patient.nursing ? 'Yes' : 'No' %></td>
+                    <!-- Display Age -->
+                    <td><%= patient.age %></td>
                     <!-- Display chronicalCondition as a comma-separated list or 'None' if empty -->
                     <td><%= patient.chronicalCondition.length > 0 ? patient.chronicalCondition.join(', ') : 'None' %></td>
                     <td><%= patient.medications %></td>
@@ -58,5 +61,7 @@
     </div>
     
     <%- include('./partials/footer.ejs') %> 
+    <!-- <script src="/js/calculate_age.js"></script> -->
+
 </body>
 </html>
