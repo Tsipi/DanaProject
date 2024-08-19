@@ -1,6 +1,4 @@
-// calculateAge.js
-
-function calculateAge(dob) {
+export const calculateAge = (dob) => {
     if (!dob) return 'N/A'; // Return 'N/A' if dob is not provided
 
     const birthDate = new Date(dob);
@@ -14,5 +12,4 @@ function calculateAge(dob) {
     }
 
     return age;
-}
-
+};
