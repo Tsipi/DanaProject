@@ -9,6 +9,7 @@ import got from 'got'; // Import got for HTTP requests
 import FormData from 'form-data'; // Import FormData to handle file uploads
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import 'dotenv/config';
 
 // Define __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -16,10 +17,8 @@ const __dirname = dirname(__filename);
 
 /* Image Ditection
 ******************/
-// const apiKey = 'acc_dc6f6fd864c44c3';
-const apiKey = 'acc_6beb1d795cf0bda';
-const apiSecret = '08e7428948be521ac61320d2423faa14';
-
+const apiKey = process.env.IMAGGAAPIKEY
+const apiSecret = process.env.IMAGGAAPISECRET
 
 // Initialize app & middleware
 const app = express()
