@@ -140,7 +140,7 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
             } else {
                 // No face detected, delete the uploaded image and ask for another
                 fs.unlinkSync(imgPath);
-                res.status(400).send("No face detected. Please upload an image with a clear face.");
+                res.render('create', { errorMessage: "No face detected. Please upload an image with a clear face." });
             }
         } catch (error) {
             console.error("Imagga API error:", error.response.body);
