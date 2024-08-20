@@ -37,17 +37,6 @@
                             <label for="lastName">Last Name</label>
                             <input type="text" class="form-control" id="lastName" name="lastName" required>
                         </div>  
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col form-group">
-                            <label for="phone">Phone</label>
-                            <input type="text" class="form-control" id="phone" name="phone" required>
-                        </div>
-                        <div class="col form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
                         <div class="col form-group">
                             <label for="gender">Gender</label>
                             <select class="form-control" id="gender" name="gender" required>
@@ -55,8 +44,7 @@
                                 <option value="female">Female</option>
                             </select>
                         </div>    
-                    </div>   
-
+                    </div>
                     <div class="row">
                         <div class="col-8"></div>
                         <div class="col-2 form-group" id="pregnancyField" style="display: none;">
@@ -74,14 +62,38 @@
                             </div>
                         </div>
                     </div> 
+                    
+                    <div class="row">
+                        <div class="col form-group">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" class="form-control" id="dob" name="dob">
+                        </div>
+                        <div class="col form-group">
+                            <label for="phone">Phone</label>
+                            <input type="text" class="form-control" id="phone" name="phone" required>
+                        </div>
+                        <div class="col form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                    </div>   
 
-                    <div class="form-group">
-                        <label for="chronicalCondition">Chronical Condition</label>
-                        <input type="text" class="form-control" id="chronicalCondition" name="chronicalCondition">
-                    </div>
-                    <div class="form-group">
-                        <label for="medications">Medications</label>
-                        <input type="text" class="form-control" id="medications" name="medications">
+                    <div class="row">
+                        <div class="col form-group">
+                            <label for="chronicalCondition">Chronical Condition</label>
+                            <select class="form-control" id="chronicalCondition" name="chronicalCondition[]" multiple>
+                                <option value="Heart disease">Heart disease</option>
+                                <option value="Kidneys">Kidneys</option>
+                                <option value="Digestion">Digestion</option>
+                                <option value="Diabetes">Diabetes</option>
+                                <option value="Asthma">Asthma</option>
+                            </select>
+                        </div>
+                        <div class="col form-group">
+                            <label for="medications">Medications</label>
+                            <input type="text" class="form-control" id="medications" name="medications">
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Add Patient</button>
                 </form>
@@ -95,5 +107,22 @@
     <script src="/js/gender-toggle.js"></script>
     <script src="/js/preview-image.js"></script>
     
+
+    <!-- Datepicker Initialization -->
+    <script>
+        $(document).ready(function() {
+       $('#datepicker').datepicker({
+           format: 'dd-mm-yyyy',
+           autoclose: true,
+           todayHighlight: true
+       });
+
+       $('#datepicker').on('changeDate', function() {
+           $('#dob').val(
+               $('#datepicker').datepicker('getFormattedDate')
+           );
+       });
+   });
+    </script>
 </body>
 </html>

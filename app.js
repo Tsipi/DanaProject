@@ -1,5 +1,7 @@
 import express from 'express';
 import { connectToDb, getDb } from './db.js';
+import { calculateAge } from './public/js/calculateAge.js';
+import { formatDate } from './util.js';
 import { ObjectId } from 'mongodb';
 import bodyParser from 'body-parser';
 import multer from 'multer';
@@ -66,6 +68,8 @@ connectToDb((err) => {
 })
 
 
+
+
 /* routes 
 *****************/
 
@@ -74,18 +78,35 @@ app.get('/', (req,res) => {
    res.render('home')
 })
 
-//Patients List
-app.get('/patients', (req,res) => {
-    db.collection('patients')
-    .find().toArray() //cursor toArray, forEach
-    .then (patients => {
-        res.render('patients', { patients: patients }); //res.status(200).json(patients)
-    })
-    .catch((err)=>{
-        res.status(500).json({error: "Could not fetch the documents/data"})
-    })
-})
+// Drugs list and their interactions
+app.get('/drugs', (req, res) => {
+    db.collection('drugs')
+        .find().toArray()
+        .then(drugs => {
+            res.render('drugs', { drugs: drugs });
+        })
+        .catch((err) => {
+            console.error("Failed to fetch drugs:", err);
+            res.status(500).json({ error: "Could not fetch the drugs data" });
+        });
+});
 
+// Patients List
+app.get('/patients', (req, res) => {
+    db.collection('patients')
+        .find().toArray()
+        .then(patients => {
+            // Calculate age for each patient and add it to the patient object
+            patients.forEach(patient => {
+                patient.age = calculateAge(patient.dob);
+            });
+
+            res.render('patients', { patients: patients, formatDate: formatDate });
+        })
+        .catch((err) => {
+            res.status(500).json({ error: "Could not fetch the documents/data" });
+        });
+});
 
 // Display the form to CREATE a new patient
 app.get('/patients/create', (req, res) => {
@@ -100,12 +121,14 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
         gender: req.body.gender,
         phone: req.body.phone,
         email: req.body.email,
-        pregnant: req.body.pregnant === 'on' || false, // Adjust as necessary based on your form
-        nursing: req.body.nursing === 'on' || false,   // Adjust as necessary based on your form
+        pregnant: req.body.pregnant === 'on' || false, 
+        nursing: req.body.nursing === 'on' || false,
+        dob: req.body.dob ? new Date(req.body.dob) : null,
         chronicalCondition: req.body.chronicalCondition || '',
         medications: req.body.medications || '',
     };
 
+    // Check if an image was uploaded
     if (req.file) {
         const imgPath = path.join(__dirname, req.file.path);
         const formData = new FormData();
@@ -115,8 +138,9 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
             // Make the request to Imagga's face detection API
             const response = await got.post('https://api.imagga.com/v2/faces/detections', {
                 body: formData,
-                username: apiKey,
-                password: apiSecret
+                headers: {
+                    'Authorization': 'Basic ' + Buffer.from(apiKey + ':' + apiSecret).toString('base64')
+                }
             });
 
             const result = JSON.parse(response.body);
@@ -125,30 +149,29 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
             if (faces && faces.length > 0) {
                 // Face detected, save the image path and patient data
                 newPatient.image = `/uploads/${req.file.filename}`;
-                
-                // Save the patient to the database
-                db.collection('patients')
-                    .insertOne(newPatient)
-                    .then(() => {
-                        res.redirect('/patients');
-                    })
-                    .catch((err) => {
-                        console.error("Failed to create patient:", err);
-                        res.status(500).json({ error: "Could not create the patient document" });
-                    });
             } else {
                 // No face detected, delete the uploaded image and ask for another
                 fs.unlinkSync(imgPath);
-                res.render('create', { errorMessage: "No face detected. Please upload an image with a clear face." });
+                return res.render('create', { errorMessage: "No face detected. Please upload an image with a clear face." });
             }
         } catch (error) {
-            console.error("Imagga API error:", error.response.body);
-            res.status(500).send("Error processing the image.");
+            console.error("Imagga API error:", error.response?.body || error.message);
+            return res.status(500).send("Error processing the image.");
         }
-    } else {
-        res.status(400).send("Please upload an image.");
     }
+
+    // Save the patient to the database (with or without an image)
+    db.collection('patients')
+        .insertOne(newPatient)
+        .then(() => {
+            res.redirect('/patients');
+        })
+        .catch((err) => {
+            console.error("Failed to create patient:", err);
+            res.status(500).json({ error: "Could not create the patient document" });
+        });
 });
+
 
 // Route to handle deleting a patient
 app.post('/patients/delete/:id', (req, res) => {
@@ -202,9 +225,10 @@ app.post('/patients/edit/:id', upload.single('image'),(req, res) => {
         phone: req.body.phone,
         email: req.body.email,
         gender: req.body.gender,
-        pregnant: req.body.gender === 'female' ? req.body.pregnant === 'on' : false,
-        nursing: req.body.gender === 'female' ? req.body.nursing === 'on' : false,
-        chronicalCondition: req.body.chronicalCondition,
+        pregnant: req.body.gender === 'female' && req.body.pregnant === 'on', // : false,
+        nursing: req.body.gender === 'female' && req.body.nursing === 'on',// : false,
+        dob: req.body.dob ? new Date(req.body.dob) : null,
+        chronicalCondition: req.body.chronicalCondition || [],
         medications: req.body.medications,
     };
 
@@ -262,6 +286,8 @@ app.post('/patients', (req, res) => {
    
 })
 
+
 app.use((req, res) => {
     res.status(404).render('404')
 })
+

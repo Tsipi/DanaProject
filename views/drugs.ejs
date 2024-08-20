@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head.ejs') %>
+    <style>
+      .small-ndc {
+          font-size: 0.9em;
+          color: #777;
+      }
+  </style>
+</head>
+
+<body>
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="container-fluid">
+        <div class="row">
+            <h2 class="col my-4">Drugs List</h2>
+        </div>
+
+        <% if (drugs.length > 0) { %>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>NDC</th>
+                    <th>Drug Name</th>
+                    <th>Related Conditions</th>
+                    <th>Interactions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% drugs.forEach(function(drug) { %>
+                <tr>
+                    <!-- <td><%= drug.ndc %></td> -->
+                    <td><span class="small-ndc"><%= drug.ndc %></span></td> <!-- Apply the small-ndc class --> 
+                    <td><%= drug.drugName %></td>
+                    <td><%= drug.relatedConditions.join(', ') %></td>
+                    <td>
+                        <ul>
+                            <% drug.interactions.forEach(function(interaction) { %>
+                            <li>
+                                <strong>With Drug:</strong> <%= interaction.withDrug %><br>
+                                <strong>Description:</strong> <%= interaction.interactionDescription %>
+                            </li>
+                            <% }); %>
+                        </ul>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <% } else { %>
+        <p>No drugs found.</p>
+        <% } %>
+    </div>
+
+    <%- include('./partials/footer.ejs') %>
+</body>
+
+</html>
