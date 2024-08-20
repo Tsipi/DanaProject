@@ -1,6 +1,7 @@
 import express from 'express';
 import { connectToDb, getDb } from './db.js';
 import { calculateAge } from './public/js/calculateAge.js';
+import { formatDate } from './util.js';
 import { ObjectId } from 'mongodb';
 import bodyParser from 'body-parser';
 import multer from 'multer';
@@ -100,7 +101,7 @@ app.get('/patients', (req, res) => {
                 patient.age = calculateAge(patient.dob);
             });
 
-            res.render('patients', { patients: patients });
+            res.render('patients', { patients: patients, formatDate: formatDate });
         })
         .catch((err) => {
             res.status(500).json({ error: "Could not fetch the documents/data" });

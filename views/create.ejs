@@ -66,7 +66,14 @@
                     <div class="row">
                         <div class="col form-group">
                             <label for="dob">Date of Birth</label>
-                            <input type="text" class="form-control" id="dob" name="dob" value="">
+                            <div class="input-group date" id="datepicker">
+                                <input type="text" class="form-control" id="dob" name="dob" placeholder="DD-MM-YYYY" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                         <div class="col form-group">
                             <label for="phone">Phone</label>
@@ -110,16 +117,19 @@
 
     <!-- Datepicker Initialization -->
     <script>
-       document.addEventListener('DOMContentLoaded', function() {
-            var dobElement = document.getElementById("dob");
-            if (dobElement) {
-                $(dobElement).datepicker({
-                    format: 'yyyy-mm-dd',
-                    autoclose: true,
-                    todayHighlight: true
-                });
-            }
-        });
+        $(document).ready(function() {
+       $('#datepicker').datepicker({
+           format: 'dd-mm-yyyy',
+           autoclose: true,
+           todayHighlight: true
+       });
+
+       $('#datepicker').on('changeDate', function() {
+           $('#dob').val(
+               $('#datepicker').datepicker('getFormattedDate')
+           );
+       });
+   });
     </script>
 </body>
 </html>
