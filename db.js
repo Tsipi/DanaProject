@@ -6,7 +6,7 @@ let dbConnection
 
 //local service for Mongo DB
 // let uri = 'mongodb://localhost:27017/patientsstore'
-let uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/patients_db';
+let uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/patientsstore';
 
 export const connectToDb = async (callback) => {
     try {

@@ -12,6 +12,8 @@ import FormData from 'form-data'; // Import FormData to handle file uploads
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import 'dotenv/config';
+// require('dotenv').config({ path: './path/to/your/.env' });
+
 
 // Define __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -124,13 +126,14 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
         pregnant: req.body.pregnant === 'on' || false, 
         nursing: req.body.nursing === 'on' || false,
         dob: req.body.dob ? new Date(req.body.dob) : null,
-        chronicalCondition: req.body.chronicalCondition || '',
-        medications: req.body.medications || '',
+        chronicalCondition: req.body.chronicalCondition || null,
+        medications: req.body.medications || null,
     };
 
     // Check if an image was uploaded
     if (req.file) {
         const imgPath = path.join(__dirname, req.file.path);
+        console.log("File uploaded to:", imgPath);
         const formData = new FormData();
         formData.append('image', fs.createReadStream(imgPath));
 
@@ -144,6 +147,7 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
             });
 
             const result = JSON.parse(response.body);
+            console.log("Imagga API response:", result);
             const faces = result.result.faces;
 
             if (faces && faces.length > 0) {
