@@ -58,6 +58,8 @@ const upload = multer({ storage: storage });
 let db
 
 let patients = []; // patients data storage
+let medications = [];
+const conditions = ['Heart disease', 'Kidneys', 'Digestion', 'Diabetes', 'Asthma'];
 
 //listen to requests
 connectToDb((err) => {
@@ -80,16 +82,16 @@ app.get('/', (req,res) => {
    res.render('home')
 })
 
-// Drugs list and their interactions
-app.get('/drugs', (req, res) => {
-    db.collection('drugs')
+// medication list and their interactions
+app.get('/medications', (req, res) => {
+    db.collection('medications')
         .find().toArray()
-        .then(drugs => {
-            res.render('drugs', { drugs: drugs });
+        .then(medications => {
+            res.render('medications', { medications: medications });
         })
         .catch((err) => {
-            console.error("Failed to fetch drugs:", err);
-            res.status(500).json({ error: "Could not fetch the drugs data" });
+            console.error("Failed to fetch medications:", err);
+            res.status(500).json({ error: "Could not fetch the medications data" });
         });
 });
 
@@ -112,7 +114,7 @@ app.get('/patients', (req, res) => {
 
 // Display the form to CREATE a new patient
 app.get('/patients/create', (req, res) => {
-    res.render('create');
+    res.render('create',{conditions});
 });
 
 // Route to handle the form submission for creating a new patient
@@ -154,7 +156,10 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
             } else {
                 // No face detected, delete the uploaded image and ask for another
                 fs.unlinkSync(imgPath);
-                return res.render('create', { errorMessage: "No face detected. Please upload an image with a clear face.", formatDate: formatDate });
+                return res.render('create', { 
+                    errorMessage: "No face detected. Please upload an image with a clear face.", 
+                    formatDate:formatDate, 
+                    conditions:conditions});
             }
         } catch (error) {
             console.error("Imagga API error:", error.response?.body || error.message);
@@ -206,7 +211,7 @@ app.get('/patients/edit/:id', (req, res) => {
                     patient.medications = patient.medications || []; // Default to an empty array if null
                     patient.chronicalCondition = patient.chronicalCondition || []; // Default to an empty array if null
                     patient.dob = patient.dob || ''; // Ensure dob is a string or empty if null
-                    res.render('edit', { patient: patient, formatDate: formatDate});
+                    res.render('edit', { patient, formatDate, conditions});
                 } else {
                     res.status(404).send('Patient not found');
                 }

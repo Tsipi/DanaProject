@@ -16,21 +16,21 @@
 
     <div class="container-fluid">
         <div class="row">
-            <h2 class="col my-4">Drugs List</h2>
+            <h2 class="col my-4">Medications List</h2>
         </div>
 
-        <% if (drugs.length > 0) { %>
+        <% if (medications.length > 0) { %>
         <table class="table table-bordered table-hover">
             <thead class="thead-dark">
                 <tr>
                     <th>NDC</th>
-                    <th>Drug Name</th>
+                    <th>Medication Name</th>
                     <th>Related Conditions</th>
                     <th>Interactions</th>
                 </tr>
             </thead>
             <tbody>
-                <% drugs.forEach(function(drug) { %>
+                <% medications.forEach(function(drug) { %>
                 <tr>
                     <!-- <td><%= drug.ndc %></td> -->
                     <td><span class="small-ndc"><%= drug.ndc %></span></td> <!-- Apply the small-ndc class --> 
@@ -51,7 +51,7 @@
             </tbody>
         </table>
         <% } else { %>
-        <p>No drugs found.</p>
+        <p>No medications found.</p>
         <% } %>
     </div>
 

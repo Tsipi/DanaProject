@@ -81,14 +81,20 @@
 
                     <div class="row">
                         <div class="col form-group">
-                            <label for="chronicalCondition">Chronical Condition</label>
-                            <select class="form-control" id="chronicalCondition" name="chronicalCondition[]" multiple>
-                                <option value="Heart disease">Heart disease</option>
-                                <option value="Kidneys">Kidneys</option>
-                                <option value="Digestion">Digestion</option>
-                                <option value="Diabetes">Diabetes</option>
-                                <option value="Asthma">Asthma</option>
-                            </select>
+                            <label for="chronicalConditionDropdown">Chronical Condition</label>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="chronicalConditionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select Conditions
+                        </button>
+                        <div class="dropdown-menu p-2" aria-labelledby="chronicalConditionDropdown">
+                            <% conditions.forEach(condition => { %>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="<%= condition %>" id="<%= condition.toLowerCase().replace(/\s+/g, '') %>">
+                                    <label class="form-check-label" for="<%= condition.toLowerCase().replace(/\s+/g, '') %>"><%= condition %></label>
+                                </div>
+                            <% }); %>                            
+                        </div>
+                    </div>
                         </div>
                         <div class="col form-group">
                             <label for="medications">Medications</label>

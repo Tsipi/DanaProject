@@ -88,31 +88,13 @@
                             Select Conditions
                         </button>
                         <div class="dropdown-menu p-2" aria-labelledby="chronicalConditionDropdown">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="Heart disease" id="heartDisease"
-                                    <%= Array.isArray(patient.chronicalCondition) && patient.chronicalCondition.includes('Heart disease') ? 'checked' : '' %>>
-                                <label class="form-check-label" for="heartDisease">Heart disease</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="Kidneys" id="kidneys"
-                                    <%= Array.isArray(patient.chronicalCondition) && patient.chronicalCondition.includes('Kidneys') ? 'checked' : '' %>>
-                                <label class="form-check-label" for="kidneys">Kidneys</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="Digestion" id="digestion"
-                                    <%= Array.isArray(patient.chronicalCondition) && patient.chronicalCondition.includes('Digestion') ? 'checked' : '' %>>
-                                <label class="form-check-label" for="digestion">Digestion</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="Diabetes" id="diabetes"
-                                    <%= Array.isArray(patient.chronicalCondition) && patient.chronicalCondition.includes('Diabetes') ? 'checked' : '' %>>
-                                <label class="form-check-label" for="diabetes">Diabetes</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="Asthma" id="asthma"
-                                    <%= Array.isArray(patient.chronicalCondition) && patient.chronicalCondition.includes('Asthma') ? 'checked' : '' %>>
-                                <label class="form-check-label" for="asthma">Asthma</label>
-                            </div>
+                            <% conditions.forEach(condition => { %>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="<%= condition %>" id="<%= condition.toLowerCase().replace(/\s+/g, '') %>"
+                                        <%= Array.isArray(patient.chronicalCondition) && patient.chronicalCondition.includes(condition) ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="<%= condition.toLowerCase().replace(/\s+/g, '') %>"><%= condition %></label>
+                                </div>
+                            <% }); %>                            
                         </div>
                     </div>
                 </div>
