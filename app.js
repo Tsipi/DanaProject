@@ -212,7 +212,6 @@ app.post('/patients/delete/:id', (req, res) => {
 app.get('/patients/edit/:id', (req, res) => {
     const patientId = req.params.id;
    
-
     if (ObjectId.isValid(patientId)) {
         db.collection('patients')
             .findOne({ _id: new ObjectId(patientId) })
@@ -246,6 +245,8 @@ app.get('/patients/edit/:id', (req, res) => {
 // Route to handle the form submission for editing a patient
 app.post('/patients/edit/:id', upload.single('image'),(req, res) => {
     const patientId = req.params.id;
+    const updatedMedications = req.body.medications || [];
+    const updatedConditions = req.body.chronicalCondition || [];
 
     const updateData = {
         firstName: req.body.firstName,
@@ -266,18 +267,62 @@ app.post('/patients/edit/:id', upload.single('image'),(req, res) => {
     }
 
     if (ObjectId.isValid(patientId)) {
-        db.collection('patients')
-            .updateOne(
-                { _id: new ObjectId(patientId) },
-                { $set: updateData }
-            )
-            .then(() => {
-                res.redirect('/patients');
-            })
-            .catch((err) => {
-                console.error("Failed to update patient:", err);
-                res.status(500).json({ error: "Could not update the patient document" });
+        db.collection('medications')
+        .find().toArray()
+        .then(medications => {
+            let conflicts = [];
+
+            // Check for condition conflicts
+            updatedMedications.forEach(medicationName => {
+                const medication = medications.find(med => med.drugName === medicationName);
+                if (medication) {
+                    medication.relatedConditions.forEach(condition => {
+                        if (updatedConditions.includes(condition)) {
+                            conflicts.push(`Medication ${medicationName} conflicts with your condition: ${condition}`);
+                        }
+                    });
+
+                    // Check for interactions with other medications
+                    medication.interactions.forEach(interaction => {
+                        if (updatedMedications.includes(interaction.withDrug)) {
+                            conflicts.push(`Medication ${medicationName} interacts with ${interaction.withDrug}: ${interaction.interactionDescription}`);
+                        }
+                    });
+                }
             });
+
+            if (conflicts.length > 0) {
+                // Return to the form with conflicts displayed
+                db.collection('patients')
+                    .findOne({ _id: new ObjectId(patientId) })
+                    .then(patient => {
+                        res.render('edit', {
+                            patient: { ...patient, ...updateData }, // Merge current patient data with update data
+                            medications,
+                            conditions: updatedConditions,
+                            formatDate,
+                            errorMessage: conflicts.join('<br>'),
+                        });
+                    })
+                    .catch(err => {
+                        console.error("Failed to fetch patient:", err);
+                        res.status(500).send('Error fetching patient data');
+                    });
+            } else {
+                // Proceed with saving the data if no conflicts
+                db.collection('patients')
+                    .updateOne({ _id: new ObjectId(patientId) }, { $set: updateData })
+                    .then(() => res.redirect('/patients'))
+                    .catch(err => {
+                        console.error("Failed to update patient:", err);
+                        res.status(500).json({ error: "Could not update the patient document" });
+                    });
+            }
+        })
+        .catch(err => {
+            console.error("Failed to fetch medications:", err);
+            res.status(500).send('Error fetching medications');
+        });
     } else {
         res.status(500).json({ error: "Not a valid patient id" });
     }

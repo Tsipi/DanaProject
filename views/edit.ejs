@@ -110,8 +110,23 @@
                                     <input class="form-check-input" type="checkbox" name="medications[]" value="<%= medication.drugName %>" id="<%= medication.drugName.toLowerCase().replace(/\s+/g, '') %>"
                                         <%= patient.medications && patient.medications.includes(medication.drugName) ? 'checked' : '' %>>
                                     <label class="form-check-label" for="<%= medication.drugName.toLowerCase().replace(/\s+/g, '') %>"><%= medication.drugName %></label>
+                                    
+                                    <!-- Check for conflicts with conditions -->
+                                    <% medication.relatedConditions.forEach(condition => { %>
+                                        <% if (patient.chronicalCondition && patient.chronicalCondition.includes(condition)) { %>
+                                            <div class="text-danger"><small>Warning: This medication may conflict with your condition: <%= condition %></small></div>
+                                        <% } %>
+                                    <% }); %>
+                    
+                                    <!-- Check for interactions with other medications -->
+                                    <% medication.interactions.forEach(interaction => { %>
+                                        <% if (patient.medications && patient.medications.includes(interaction.withDrug)) { %>
+                                            <div class="text-danger"><small>Warning: Interaction with <%= interaction.withDrug %>: <%= interaction.interactionDescription %></small></div>
+                                        <% } %>
+                                    <% }); %>
+                    
                                 </div>
-                            <% }); %>
+                            <% }); %>                            
                         </div>
                     </div>
                 </div>
