@@ -12,7 +12,6 @@ import FormData from 'form-data'; // Import FormData to handle file uploads
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import 'dotenv/config';
-// require('dotenv').config({ path: './path/to/your/.env' });
 
 
 // Define __dirname for ES Modules
@@ -114,7 +113,15 @@ app.get('/patients', (req, res) => {
 
 // Display the form to CREATE a new patient
 app.get('/patients/create', (req, res) => {
-    res.render('create',{conditions});
+    db.collection('medications')
+    .find().toArray()
+    .then(medications => {
+        res.render('create', { conditions, medications });
+    })
+    .catch(err => {
+        console.error("Failed to fetch medications:", err);
+        res.status(500).json({ error: "Could not fetch the medications data" });
+    });
 });
 
 // Route to handle the form submission for creating a new patient
@@ -159,7 +166,9 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
                 return res.render('create', { 
                     errorMessage: "No face detected. Please upload an image with a clear face.", 
                     formatDate:formatDate, 
-                    conditions:conditions});
+                    conditions:conditions,
+                    medications: medications,
+                });
             }
         } catch (error) {
             console.error("Imagga API error:", error.response?.body || error.message);
@@ -202,16 +211,25 @@ app.post('/patients/delete/:id', (req, res) => {
 // Route to display the edit form
 app.get('/patients/edit/:id', (req, res) => {
     const patientId = req.params.id;
+   
 
     if (ObjectId.isValid(patientId)) {
         db.collection('patients')
             .findOne({ _id: new ObjectId(patientId) })
             .then(patient => {
                 if (patient) {
-                    patient.medications = patient.medications || []; // Default to an empty array if null
-                    patient.chronicalCondition = patient.chronicalCondition || []; // Default to an empty array if null
-                    patient.dob = patient.dob || ''; // Ensure dob is a string or empty if null
-                    res.render('edit', { patient, formatDate, conditions});
+                    db.collection('medications')
+                        .find().toArray()
+                        .then(medications => {
+                            patient.medications = patient.medications || []; // Default to an empty array if null
+                            patient.chronicalCondition = patient.chronicalCondition || []; // Default to an empty array if null
+                            patient.dob = patient.dob || ''; // Ensure dob is a string or empty if null
+                            res.render('edit', { patient, formatDate, conditions, medications });
+                        })
+                        .catch(err => {
+                            console.error("Failed to fetch medications:", err);
+                            res.status(500).send('Error fetching medications');
+                        });
                 } else {
                     res.status(404).send('Patient not found');
                 }
