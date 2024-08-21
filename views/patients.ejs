@@ -43,9 +43,9 @@
                     <td><%= patient.nursing ? 'Yes' : 'No' %></td>
                     <!-- Display Age -->
                     <td><%= patient.age %></td>
-                    <td><%= formatDate(patient.dob) %></td>
+                    <td><%= patient.dob ? formatDate(patient.dob) : 'N/A' %></td>
                     <!-- Display chronicalCondition as a comma-separated list or 'None' if empty -->
-                    <td><%= patient.chronicalCondition.length > 0 ? patient.chronicalCondition.join(', ') : 'None' %></td>
+                    <td><%= patient.chronicalCondition && patient.chronicalCondition.length > 0 ? patient.chronicalCondition.join(', ') : 'None' %></td>
                     <td><%= patient.medications %></td>
                     <td>
                         <form action="/patients/delete/<%= patient._id.toString() %>" method="POST" style="display:inline;">

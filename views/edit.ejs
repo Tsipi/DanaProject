@@ -65,7 +65,7 @@
             <div class="row">
                 <div class="col form-group">
                     <label for="dob">Date of Birth</label>
-                    <input type="date" class="form-control" id="dob" name="dob" value="<%= patient.dob ? new Date(patient.dob).toISOString().substring(0, 10) : '' %>">
+                    <input type="date" class="form-control" id="dob" name="dob" value="<%= patient.dob ? formatDate(patient.dob) : '' %>">
                 </div>
                 <div class="col form-group">
                     <label for="phone">Phone</label>
@@ -87,30 +87,30 @@
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="chronicalConditionDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Select Conditions
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="chronicalConditionDropdown">
+                        <div class="dropdown-menu p-2" aria-labelledby="chronicalConditionDropdown">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="Heart disease" id="heartDisease"
-                                    <%= patient.chronicalCondition.includes('Heart disease') ? 'checked' : '' %>>
+                                    <%= Array.isArray(patient.chronicalCondition) && patient.chronicalCondition.includes('Heart disease') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="heartDisease">Heart disease</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="Kidneys" id="kidneys"
-                                    <%= patient.chronicalCondition.includes('Kidneys') ? 'checked' : '' %>>
+                                    <%= Array.isArray(patient.chronicalCondition) && patient.chronicalCondition.includes('Kidneys') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="kidneys">Kidneys</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="Digestion" id="digestion"
-                                    <%= patient.chronicalCondition.includes('Digestion') ? 'checked' : '' %>>
+                                    <%= Array.isArray(patient.chronicalCondition) && patient.chronicalCondition.includes('Digestion') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="digestion">Digestion</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="Diabetes" id="diabetes"
-                                    <%= patient.chronicalCondition.includes('Diabetes') ? 'checked' : '' %>>
+                                    <%= Array.isArray(patient.chronicalCondition) && patient.chronicalCondition.includes('Diabetes') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="diabetes">Diabetes</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="chronicalCondition[]" value="Asthma" id="asthma"
-                                    <%= patient.chronicalCondition.includes('Asthma') ? 'checked' : '' %>>
+                                    <%= Array.isArray(patient.chronicalCondition) && patient.chronicalCondition.includes('Asthma') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="asthma">Asthma</label>
                             </div>
                         </div>
@@ -122,55 +122,55 @@
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="medicationsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Select Medications
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="medicationsDropdown">
+                        <div class="dropdown-menu p-2" aria-labelledby="medicationsDropdown">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="medications[]" value="Warfarin (Coumadin)" id="warfarin"
-                                    <%= patient.medications.includes('Warfarin (Coumadin)') ? 'checked' : '' %>>
+                                    <%= patient.medications && patient.medications.includes('Warfarin (Coumadin)') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="warfarin">Warfarin (Coumadin)</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="medications[]" value="Simvastatin (Zocor)" id="simvastatin"
-                                    <%= patient.medications.includes('Simvastatin (Zocor)') ? 'checked' : '' %>>
+                                    <%= patient.medications && patient.medications.includes('Simvastatin (Zocor)') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="simvastatin">Simvastatin (Zocor)</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="medications[]" value="Metformin (Glucophage)" id="metformin"
-                                    <%= patient.medications.includes('Metformin (Glucophage)') ? 'checked' : '' %>>
+                                    <%= patient.medications && patient.medications.includes('Metformin (Glucophage)') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="metformin">Metformin (Glucophage)</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="medications[]" value="Aspirin" id="aspirin"
-                                    <%= patient.medications.includes('Aspirin') ? 'checked' : '' %>>
+                                    <%= patient.medications && patient.medications.includes('Aspirin') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="aspirin">Aspirin</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="medications[]" value="Ciprofloxacin (Cipro)" id="ciprofloxacin"
-                                    <%= patient.medications.includes('Ciprofloxacin (Cipro)') ? 'checked' : '' %>>
+                                    <%= patient.medications && patient.medications.includes('Ciprofloxacin (Cipro)') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="ciprofloxacin">Ciprofloxacin (Cipro)</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="medications[]" value="Digoxin (Lanoxin)" id="digoxin"
-                                    <%= patient.medications.includes('Digoxin (Lanoxin)') ? 'checked' : '' %>>
+                                    <%= patient.medications && patient.medications.includes('Digoxin (Lanoxin)') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="digoxin">Digoxin (Lanoxin)</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="medications[]" value="Verapamil (Calan, Verelan)" id="verapamil"
-                                    <%= patient.medications.includes('Verapamil (Calan, Verelan)') ? 'checked' : '' %>>
+                                    <%= patient.medications && patient.medications.includes('Verapamil (Calan, Verelan)') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="verapamil">Verapamil (Calan, Verelan)</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="medications[]" value="Albuterol (Proventil, Ventolin)" id="albuterol"
-                                    <%= patient.medications.includes('Albuterol (Proventil, Ventolin)') ? 'checked' : '' %>>
+                                    <%= patient.medications && patient.medications.includes('Albuterol (Proventil, Ventolin)') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="albuterol">Albuterol (Proventil, Ventolin)</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="medications[]" value="Levothyroxine (Synthroid)" id="levothyroxine"
-                                    <%= patient.medications.includes('Levothyroxine (Synthroid)') ? 'checked' : '' %>>
+                                    <%= patient.medications && patient.medications.includes('Levothyroxine (Synthroid)') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="levothyroxine">Levothyroxine (Synthroid)</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="medications[]" value="Spironolactone (Aldactone)" id="spironolactone"
-                                    <%= patient.medications.includes('Spironolactone (Aldactone)') ? 'checked' : '' %>>
+                                    <%= patient.medications && patient.medications.includes('Spironolactone (Aldactone)') ? 'checked' : '' %>>
                                 <label class="form-check-label" for="spironolactone">Spironolactone (Aldactone)</label>
                             </div>
                         </div>

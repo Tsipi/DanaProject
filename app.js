@@ -133,7 +133,6 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
     // Check if an image was uploaded
     if (req.file) {
         const imgPath = path.join(__dirname, req.file.path);
-        console.log("File uploaded to:", imgPath);
         const formData = new FormData();
         formData.append('image', fs.createReadStream(imgPath));
 
@@ -147,7 +146,6 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
             });
 
             const result = JSON.parse(response.body);
-            console.log("Imagga API response:", result);
             const faces = result.result.faces;
 
             if (faces && faces.length > 0) {
@@ -156,7 +154,7 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
             } else {
                 // No face detected, delete the uploaded image and ask for another
                 fs.unlinkSync(imgPath);
-                return res.render('create', { errorMessage: "No face detected. Please upload an image with a clear face." });
+                return res.render('create', { errorMessage: "No face detected. Please upload an image with a clear face.", formatDate: formatDate });
             }
         } catch (error) {
             console.error("Imagga API error:", error.response?.body || error.message);
@@ -205,7 +203,10 @@ app.get('/patients/edit/:id', (req, res) => {
             .findOne({ _id: new ObjectId(patientId) })
             .then(patient => {
                 if (patient) {
-                    res.render('edit', { patient: patient });
+                    patient.medications = patient.medications || []; // Default to an empty array if null
+                    patient.chronicalCondition = patient.chronicalCondition || []; // Default to an empty array if null
+                    patient.dob = patient.dob || ''; // Ensure dob is a string or empty if null
+                    res.render('edit', { patient: patient, formatDate: formatDate});
                 } else {
                     res.status(404).send('Patient not found');
                 }
@@ -233,7 +234,7 @@ app.post('/patients/edit/:id', upload.single('image'),(req, res) => {
         nursing: req.body.gender === 'female' && req.body.nursing === 'on',// : false,
         dob: req.body.dob ? new Date(req.body.dob) : null,
         chronicalCondition: req.body.chronicalCondition || [],
-        medications: req.body.medications,
+        medications: req.body.medications || [],
     };
 
     // Check if an image was uploaded
