@@ -126,6 +126,9 @@ app.get('/patients/create', (req, res) => {
 
 // Route to handle the form submission for creating a new patient
 app.post('/patients/create', upload.single('image'), async (req, res) => {
+    const newMedications = req.body.medications || [];
+    const newConditions = req.body.chronicalCondition || [];
+    
     const newPatient = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -146,7 +149,6 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
         formData.append('image', fs.createReadStream(imgPath));
 
         try {
-            // Make the request to Imagga's face detection API
             const response = await got.post('https://api.imagga.com/v2/faces/detections', {
                 body: formData,
                 headers: {
@@ -158,15 +160,13 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
             const faces = result.result.faces;
 
             if (faces && faces.length > 0) {
-                // Face detected, save the image path and patient data
                 newPatient.image = `/uploads/${req.file.filename}`;
             } else {
-                // No face detected, delete the uploaded image and ask for another
                 fs.unlinkSync(imgPath);
                 return res.render('create', { 
                     errorMessage: "No face detected. Please upload an image with a clear face.", 
-                    formatDate:formatDate, 
-                    conditions:conditions,
+                    formatDate: formatDate, 
+                    conditions: conditions,
                     medications: medications,
                 });
             }
@@ -176,16 +176,54 @@ app.post('/patients/create', upload.single('image'), async (req, res) => {
         }
     }
 
-    // Save the patient to the database (with or without an image)
-    db.collection('patients')
-        .insertOne(newPatient)
-        .then(() => {
-            res.redirect('/patients');
-        })
-        .catch((err) => {
-            console.error("Failed to create patient:", err);
-            res.status(500).json({ error: "Could not create the patient document" });
+    try {
+        const medications = await db.collection('medications').find().toArray();
+
+        let conflicts = [];
+        let conflictDetails = {}; // Object to store conflict details per medication
+
+        newMedications.forEach(medicationName => {
+            const medication = medications.find(med => med.drugName === medicationName);
+            if (medication) {
+                medication.relatedConditions.forEach(condition => {
+                    if (newConditions.includes(condition)) {
+                        conflicts.push(`Medication ${medicationName} conflicts with your condition: ${condition}`);
+                        if (!conflictDetails[medicationName]) {
+                            conflictDetails[medicationName] = [];
+                        }
+                        conflictDetails[medicationName].push(`Conflicts with your condition: ${condition}`);
+                    }
+                });
+
+                medication.interactions.forEach(interaction => {
+                    if (newMedications.includes(interaction.withDrug)) {
+                        conflicts.push(`Medication ${medicationName} interacts with ${interaction.withDrug}: ${interaction.interactionDescription}`);
+                        if (!conflictDetails[medicationName]) {
+                            conflictDetails[medicationName] = [];
+                        }
+                        conflictDetails[medicationName].push(`Interacts with ${interaction.withDrug}: ${interaction.interactionDescription}`);
+                    }
+                });
+            }
         });
+
+        if (conflicts.length > 0) {
+            return res.render('create', {
+                errorMessage: conflicts.join('<br>'),
+                formatDate,
+                conditions,
+                medications,
+                patient: newPatient,
+                conflictDetails, // Pass the conflict details to the view
+            });
+        }
+
+        await db.collection('patients').insertOne(newPatient);
+        res.redirect('/patients');
+    } catch (err) {
+        console.error("Failed to create patient:", err);
+        res.status(500).json({ error: "Could not create the patient document" });
+    }
 });
 
 
